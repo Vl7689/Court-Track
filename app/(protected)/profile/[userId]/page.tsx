@@ -27,15 +27,15 @@ function WR({ rate }: { rate: number }) {
 
 function Table({ headers, rows }: { headers: string[]; rows: React.ReactNode[][] }) {
   return (
-    <div className="bg-slate-800/50 border border-slate-700 rounded-2xl overflow-hidden">
-      <table className="w-full">
+    <div className="bg-slate-800/50 border border-slate-700 rounded-2xl overflow-x-auto">
+      <table className="w-full min-w-[320px]">
         <thead><tr className="border-b border-slate-700">
-          {headers.map((h, i) => <th key={h} className={`px-5 py-3 text-xs text-slate-400 uppercase tracking-wide ${i === 0 ? 'text-left' : 'text-right'}`}>{h}</th>)}
+          {headers.map((h, i) => <th key={h} className={`px-4 py-3 text-xs text-slate-400 uppercase tracking-wide whitespace-nowrap ${i === 0 ? 'text-left' : 'text-right'}`}>{h}</th>)}
         </tr></thead>
         <tbody>
           {rows.map((row, i) => (
-            <tr key={i} className="border-b border-slate-700/40 hover:bg-slate-700/20 transition-colors">
-              {row.map((cell, j) => <td key={j} className={`px-5 py-3 text-sm ${j === 0 ? 'text-left' : 'text-right'}`}>{cell}</td>)}
+            <tr key={i} className="border-b border-slate-700/40 last:border-0 hover:bg-slate-700/20 transition-colors">
+              {row.map((cell, j) => <td key={j} className={`px-4 py-3 text-sm ${j === 0 ? 'text-left' : 'text-right'}`}>{cell}</td>)}
             </tr>
           ))}
         </tbody>
@@ -62,8 +62,14 @@ export default function ProfilePage({ params }: { params: { userId: string } }) 
     enabled: !!userId,
   });
 
-  if (isLoading) return <div className="flex items-center justify-center py-24 text-slate-400">Loading profile...</div>;
-  if (!profile) return <div className="flex items-center justify-center py-24 text-slate-400">Player not found.</div>;
+  if (isLoading) return <div className="flex items-center justify-center py-24 text-slate-400">Loading...</div>;
+  if (!profile) return (
+    <div className="flex flex-col items-center justify-center py-24 gap-3 text-center px-4">
+      <p className="text-4xl">👤</p>
+      <p className="text-slate-300 font-semibold">Player not found</p>
+      <p className="text-slate-500 text-sm">This account may have been removed.</p>
+    </div>
+  );
 
   const isMe = me?.id === Number(userId);
   const { stats, headToHead, nemesis, bestVictim, locationStats, partnerStats, sportBreakdown, formatBreakdown, dayOfWeek, setStats, momentum, highlights, formTrend, recentMatches } = profile;
@@ -71,23 +77,32 @@ export default function ProfilePage({ params }: { params: { userId: string } }) 
   const margin = setStats.avgScoreFor - setStats.avgScoreAgainst;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-      <div className="flex items-start justify-between">
+    <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold">{profile.user.username}{isMe && <span className="ml-2 text-sm text-slate-400 font-normal">(you)</span>}</h2>
+          <h2 className="text-xl font-bold">{profile.user.username}{isMe && <span className="ml-2 text-sm text-slate-400 font-normal">(you)</span>}</h2>
           <p className="text-slate-500 text-sm mt-0.5">Member since {new Date(profile.user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</p>
         </div>
         {stats.total > 0 && (
-          <div className="text-right">
+          <div className="text-right shrink-0">
             <p className="text-xs text-slate-400 mb-1">{stats.wins}W – {stats.losses}L</p>
-            <div className="w-32 h-2 bg-slate-700 rounded-full overflow-hidden">
+            <div className="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
               <div className="h-full bg-green-500 rounded-full" style={{ width: `${winBar}%` }} />
             </div>
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {stats.total === 0 && (
+        <div className="text-center py-12 border border-dashed border-slate-700 rounded-2xl">
+          <p className="text-4xl mb-3">🎾</p>
+          <p className="text-slate-300 font-semibold">{isMe ? 'You haven\'t logged any matches yet' : 'No matches logged yet'}</p>
+          <p className="text-slate-500 text-sm mt-1">{isMe ? 'Log your first match to start tracking stats.' : 'Stats will appear once matches are logged.'}</p>
+          {isMe && <Link href="/log" className="inline-block mt-4 bg-green-500 text-black font-semibold px-4 py-2 rounded-xl text-sm">Log a Match</Link>}
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard label="Wins" value={stats.wins} accent />
         <StatCard label="Losses" value={stats.losses} />
         <StatCard label="Win Rate" value={`${stats.winRate}%`} accent />
@@ -261,11 +276,11 @@ export default function ProfilePage({ params }: { params: { userId: string } }) 
         )}
       </>)}
 
-      <Section title="Match History">
-        {recentMatches.length === 0
-          ? <div className="text-center py-16 text-slate-500 border border-dashed border-slate-700 rounded-xl">No matches recorded yet.</div>
-          : <div className="space-y-3">{recentMatches.map(m => <MatchCard key={m.id} match={m} currentUserId={Number(userId)} />)}</div>}
-      </Section>
+      {recentMatches.length > 0 && (
+        <Section title="Match History">
+          <div className="space-y-2.5">{recentMatches.map(m => <MatchCard key={m.id} match={m} currentUserId={Number(userId)} />)}</div>
+        </Section>
+      )}
     </div>
   );
 }
