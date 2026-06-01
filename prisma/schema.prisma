@@ -14,13 +14,15 @@ model User {
   password  String
   createdAt DateTime @default(now())
 
-  t1p1Matches   Match[]       @relation("T1P1")
-  t1p2Matches   Match[]       @relation("T1P2")
-  t2p1Matches   Match[]       @relation("T2P1")
-  t2p2Matches   Match[]       @relation("T2P2")
-  loggedMatches Match[]       @relation("LoggedBy")
-  createdGroups Group[]       @relation("CreatedGroups")
-  memberships   GroupMember[]
+  t1p1Matches       Match[]            @relation("T1P1")
+  t1p2Matches       Match[]            @relation("T1P2")
+  t2p1Matches       Match[]            @relation("T2P1")
+  t2p2Matches       Match[]            @relation("T2P2")
+  loggedMatches     Match[]            @relation("LoggedBy")
+  createdGroups     Group[]            @relation("CreatedGroups")
+  memberships       GroupMember[]
+  notifications     Notification[]
+  pushSubscriptions PushSubscription[]
 }
 
 model Sport {
@@ -55,6 +57,28 @@ model Match {
   t2p2   User? @relation("T2P2", fields: [t2p2Id], references: [id])
 
   playedAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  type      String
+  title     String
+  body      String
+  matchId   Int?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model PushSubscription {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
   createdAt DateTime @default(now())
 }
 

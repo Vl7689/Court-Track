@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { getUser, unauth } from '@/lib/auth';
+import { createNotification } from '@/lib/push';
 
 const schema = z.object({ action: z.enum(['confirmed', 'disputed']) });
 
@@ -24,10 +25,22 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Cannot confirm your own match' }, { status: 403 });
   }
 
+  const confirmerName = await prisma.user.findUnique({ where: { id: user.userId }, select: { username: true } });
   const updated = await prisma.match.update({
     where: { id: matchId },
     data: { status: body.data.action },
   });
+
+  if (match.loggedById) {
+    const isConfirmed = body.data.action === 'confirmed';
+    createNotification(
+      match.loggedById,
+      isConfirmed ? 'match_confirmed' : 'match_disputed',
+      isConfirmed ? 'Match confirmed ✅' : 'Match disputed ⚠️',
+      `${confirmerName?.username ?? 'Someone'} ${isConfirmed ? 'confirmed' : 'disputed'} your match result`,
+      matchId,
+    ).catch(() => {});
+  }
 
   return NextResponse.json(updated);
 }

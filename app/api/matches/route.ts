@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { getUser, unauth } from '@/lib/auth';
 import { sendMatchNotification } from '@/lib/email';
+import { createNotification } from '@/lib/push';
 
 const matchInclude = {
   sport: true,
@@ -52,10 +53,21 @@ export async function POST(req: NextRequest) {
   const scoreStr = (JSON.parse(match.scores) as { team1: number; team2: number }[])
     .map((s: { team1: number; team2: number }) => `${s.team1}-${s.team2}`).join(', ');
 
+  const loggerName = match.loggedBy?.username ?? 'Someone';
+  for (const opp of opponents) {
+    createNotification(
+      opp.id,
+      'match_pending',
+      `${loggerName} logged a match`,
+      `${team1} vs ${team2} · ${scoreStr} — confirm or dispute`,
+      match.id,
+    ).catch(() => {});
+  }
+
   for (const ou of opponentUsers) {
     sendMatchNotification({
       to: ou.email,
-      loggedByUsername: match.loggedBy?.username ?? 'Someone',
+      loggedByUsername: loggerName,
       team1, team2, scores: scoreStr, sport: match.sport.name,
     }).catch(() => {});
   }

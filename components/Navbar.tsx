@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuthContext } from '@/app/providers';
+import NotificationBell from './NotificationBell';
 
 export default function Navbar() {
   const { user, logout } = useAuthContext();
@@ -29,13 +30,14 @@ export default function Navbar() {
           <Link href="/log" className="bg-green-500 hover:bg-green-400 text-black font-semibold px-3 py-1.5 rounded-md transition-colors text-xs">
             + Log Match
           </Link>
+          <NotificationBell />
           <Link href={`/profile/${user?.id}`} className="text-slate-300 hover:text-white transition-colors">{user?.username}</Link>
           <button onClick={handleLogout} className="text-slate-500 hover:text-red-400 transition-colors text-xs">Sign out</button>
         </div>
 
-        {/* Mobile: username + sign out */}
-        <div className="flex md:hidden items-center gap-3 text-sm">
-          <Link href={`/profile/${user?.id}`} className="text-slate-300">{user?.username}</Link>
+        {/* Mobile: bell + sign out */}
+        <div className="flex md:hidden items-center gap-3">
+          <NotificationBell />
           <button onClick={handleLogout} className="text-slate-500 hover:text-red-400 text-xs">Sign out</button>
         </div>
       </div>

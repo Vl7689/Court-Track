@@ -6,6 +6,7 @@ import { useAuthContext } from '@/app/providers';
 import Navbar from '@/components/Navbar';
 import BottomNav from '@/components/BottomNav';
 import { api } from '@/lib/api';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 import type { Match } from '@/types';
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
@@ -21,6 +22,8 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     if (ready && !user) router.push('/login');
   }, [ready, user, router]);
+
+  usePushNotifications();
 
   const { data: pending } = useQuery<Match[]>({
     queryKey: ['matches', 'pending'],
