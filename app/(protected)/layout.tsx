@@ -1,8 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { useAuthContext } from '@/app/providers';
 import Navbar from '@/components/Navbar';
+import BottomNav from '@/components/BottomNav';
+import { api } from '@/lib/api';
+import type { Match } from '@/types';
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuthContext();
@@ -18,12 +22,19 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
     if (ready && !user) router.push('/login');
   }, [ready, user, router]);
 
+  const { data: pending } = useQuery<Match[]>({
+    queryKey: ['matches', 'pending'],
+    queryFn: () => api.get('/matches/pending').then(r => r.data as Match[]),
+    enabled: !!user && ready,
+  });
+
   if (!ready || !user) return null;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-20 md:pb-0">
       <Navbar />
       {children}
+      <BottomNav pendingCount={pending?.length} />
     </div>
   );
 }

@@ -56,7 +56,7 @@ export default function LogMatchPage() {
     mutation.mutate({ sportId: Number(sportId), matchType, location: location.trim() || undefined, t1p1Id, t1p2Id, t2p1Id, t2p2Id, scores: parsedScores, winnerTeam });
   };
 
-  const inp = 'w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 transition-colors text-sm';
+  const inp = 'w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 transition-colors text-sm appearance-none';
   const lbl = 'text-xs text-slate-400 uppercase tracking-wide block mb-1.5';
 
   return (
@@ -64,7 +64,7 @@ export default function LogMatchPage() {
       <h2 className="text-2xl font-bold mb-1">Log a Match</h2>
       <p className="text-slate-400 text-sm mb-6">Type a name to search registered players.</p>
       <form onSubmit={handleSubmit} className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 space-y-5">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className={lbl}>Sport</label>
             <select value={sportId} onChange={e => setSportId(e.target.value)} className={inp} required>
@@ -90,7 +90,7 @@ export default function LogMatchPage() {
           <input type="text" value={location} onChange={e => setLocation(e.target.value)} placeholder="e.g. Downtown Rec Center" className={inp} />
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {[
             { label: 'Team 1', color: 'text-green-400', p1: t1p1, setP1: setT1p1, p2: t1p2, setP2: setT1p2 },
             { label: 'Team 2', color: 'text-slate-300', p1: t2p1, setP1: setT2p1, p2: t2p2, setP2: setT2p2 },

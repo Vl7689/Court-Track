@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { getUser, unauth } from '@/lib/auth';
+import { sendMatchNotification } from '@/lib/email';
 
 const matchInclude = {
   sport: true,
@@ -34,9 +35,30 @@ export async function POST(req: NextRequest) {
 
   const { scores, ...rest } = body.data;
   const match = await prisma.match.create({
-    data: { ...rest, scores: JSON.stringify(scores) },
-    include: matchInclude,
+    data: { ...rest, scores: JSON.stringify(scores), status: 'pending', loggedById: user.userId },
+    include: { ...matchInclude, loggedBy: { select: { id: true, username: true } } },
   });
+
+  // Notify opponents by email (fire-and-forget)
+  const opponents = [match.t2p1, match.t2p2, match.t1p2].filter(
+    (p): p is { id: number; username: string } => !!p && p.id !== user.userId,
+  );
+  const opponentUsers = await prisma.user.findMany({
+    where: { id: { in: opponents.map(o => o.id) } },
+    select: { email: true },
+  });
+  const team1 = [match.t1p1.username, match.t1p2?.username].filter(Boolean).join(' & ');
+  const team2 = [match.t2p1.username, match.t2p2?.username].filter(Boolean).join(' & ');
+  const scoreStr = (JSON.parse(match.scores) as { team1: number; team2: number }[])
+    .map((s: { team1: number; team2: number }) => `${s.team1}-${s.team2}`).join(', ');
+
+  for (const ou of opponentUsers) {
+    sendMatchNotification({
+      to: ou.email,
+      loggedByUsername: match.loggedBy?.username ?? 'Someone',
+      team1, team2, scores: scoreStr, sport: match.sport.name,
+    }).catch(() => {});
+  }
 
   return NextResponse.json({ ...match, scores: JSON.parse(match.scores) }, { status: 201 });
 }

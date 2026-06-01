@@ -22,6 +22,8 @@ export interface Match {
   location: string | null;
   scores: ScoreSet[];
   winnerTeam: 1 | 2;
+  status: 'pending' | 'confirmed' | 'disputed';
+  loggedById: number | null;
   t1p1: MatchPlayer;
   t1p2: MatchPlayer | null;
   t2p1: MatchPlayer;

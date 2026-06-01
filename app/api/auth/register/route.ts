@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { signToken } from '@/lib/jwt';
+import { containsProfanity } from '@/lib/profanity';
 
 const schema = z.object({
   username: z.string().min(3).max(30).regex(/^\w+$/, 'Letters, numbers, underscores only'),
@@ -17,6 +18,10 @@ export async function POST(req: NextRequest) {
   }
 
   const { username, email, password } = body.data;
+
+  if (containsProfanity(username)) {
+    return NextResponse.json({ error: 'Username contains inappropriate language' }, { status: 400 });
+  }
 
   const existing = await prisma.user.findFirst({
     where: { OR: [{ username }, { email }] },

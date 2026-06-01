@@ -20,7 +20,9 @@ export default function Navbar() {
     <nav className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm sticky top-0 z-10">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
         <Link href="/" className="text-green-400 font-bold text-lg tracking-tight select-none">CourtTrack</Link>
-        <div className="flex items-center gap-6 text-sm">
+
+        {/* Desktop nav links */}
+        <div className="hidden md:flex items-center gap-6 text-sm">
           {navLink('/', 'Dashboard')}
           {navLink('/leaderboard', 'Leaderboard')}
           {navLink('/groups', 'Groups')}
@@ -29,6 +31,12 @@ export default function Navbar() {
           </Link>
           <Link href={`/profile/${user?.id}`} className="text-slate-300 hover:text-white transition-colors">{user?.username}</Link>
           <button onClick={handleLogout} className="text-slate-500 hover:text-red-400 transition-colors text-xs">Sign out</button>
+        </div>
+
+        {/* Mobile: username + sign out */}
+        <div className="flex md:hidden items-center gap-3 text-sm">
+          <Link href={`/profile/${user?.id}`} className="text-slate-300">{user?.username}</Link>
+          <button onClick={handleLogout} className="text-slate-500 hover:text-red-400 text-xs">Sign out</button>
         </div>
       </div>
     </nav>

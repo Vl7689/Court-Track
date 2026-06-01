@@ -18,6 +18,7 @@ model User {
   t1p2Matches   Match[]       @relation("T1P2")
   t2p1Matches   Match[]       @relation("T2P1")
   t2p2Matches   Match[]       @relation("T2P2")
+  loggedMatches Match[]       @relation("LoggedBy")
   createdGroups Group[]       @relation("CreatedGroups")
   memberships   GroupMember[]
 }
@@ -40,6 +41,9 @@ model Match {
   location   String?
   scores     String
   winnerTeam Int
+  status     String   @default("pending")
+  loggedById Int?
+  loggedBy   User?    @relation("LoggedBy", fields: [loggedById], references: [id])
 
   t1p1Id Int
   t1p1   User  @relation("T1P1", fields: [t1p1Id], references: [id])
