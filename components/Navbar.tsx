@@ -18,7 +18,8 @@ export default function Navbar() {
   );
 
   return (
-    <nav className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm sticky top-0 z-10">
+    <nav className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm sticky top-0 z-10"
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
         <Link href="/" className="text-green-400 font-bold text-lg tracking-tight select-none">CourtTrack</Link>
 
