@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.env
+*.db
+*.db-journal
+public/sw.js
+public/workbox-*.js
+public/worker-*.js
+public/fallback-*.js

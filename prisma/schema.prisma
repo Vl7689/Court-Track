@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  t1p1Matches   Match[]       @relation("T1P1")
+  t1p2Matches   Match[]       @relation("T1P2")
+  t2p1Matches   Match[]       @relation("T2P1")
+  t2p2Matches   Match[]       @relation("T2P2")
+  createdGroups Group[]       @relation("CreatedGroups")
+  memberships   GroupMember[]
+}
+
+model Sport {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  slug        String  @unique
+  description String?
+  pointSystem String
+
+  matches Match[]
+}
+
+model Match {
+  id         Int      @id @default(autoincrement())
+  sportId    Int
+  sport      Sport    @relation(fields: [sportId], references: [id])
+  matchType  String
+  location   String?
+  scores     String
+  winnerTeam Int
+
+  t1p1Id Int
+  t1p1   User  @relation("T1P1", fields: [t1p1Id], references: [id])
+  t1p2Id Int?
+  t1p2   User? @relation("T1P2", fields: [t1p2Id], references: [id])
+  t2p1Id Int
+  t2p1   User  @relation("T2P1", fields: [t2p1Id], references: [id])
+  t2p2Id Int?
+  t2p2   User? @relation("T2P2", fields: [t2p2Id], references: [id])
+
+  playedAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model Group {
+  id          Int           @id @default(autoincrement())
+  name        String
+  createdById Int
+  createdBy   User          @relation("CreatedGroups", fields: [createdById], references: [id])
+  members     GroupMember[]
+  createdAt   DateTime      @default(now())
+}
+
+model GroupMember {
+  groupId  Int
+  userId   Int
+  group    Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id])
+  joinedAt DateTime @default(now())
+
+  @@id([groupId, userId])
+}
