@@ -11,7 +11,8 @@ export default function BottomNav({ pendingCount }: { pendingCount?: number }) {
     pathname === href ? 'text-green-400' : 'text-slate-500';
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-20 md:hidden bg-slate-900 border-t border-slate-800 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-20 md:hidden bg-slate-900 border-t border-slate-800"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <div className="flex items-end h-16">
         {/* Home */}
         <Link href="/" className={`flex-1 flex flex-col items-center justify-center gap-1 py-2 ${active('/')}`}>

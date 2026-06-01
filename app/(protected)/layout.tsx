@@ -34,7 +34,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   if (!ready || !user) return null;
 
   return (
-    <div className="min-h-screen pb-20 md:pb-0">
+    <div className="min-h-screen pb-24 md:pb-0">
       <Navbar />
       {children}
       <BottomNav pendingCount={pending?.length} />
