@@ -6,7 +6,17 @@ const config: Config = {
     './components/**/*.{js,ts,jsx,tsx}',
     './hooks/**/*.{js,ts,jsx,tsx}',
   ],
-  theme: { extend: {} },
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+      },
+      colors: {
+        surface: '#18181b',
+        elevated: '#27272a',
+      },
+    },
+  },
   plugins: [],
 };
 

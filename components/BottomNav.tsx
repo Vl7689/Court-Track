@@ -8,10 +8,10 @@ export default function BottomNav({ pendingCount }: { pendingCount?: number }) {
   const pathname = usePathname();
 
   const active = (href: string) =>
-    pathname === href ? 'text-green-400' : 'text-slate-500';
+    pathname === href ? 'text-green-400' : 'text-zinc-600';
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-20 md:hidden bg-slate-900 border-t border-slate-800"
+    <nav className="fixed bottom-0 left-0 right-0 z-20 md:hidden bg-zinc-950 border-t border-zinc-800"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <div className="flex items-end h-16">
         {/* Home */}
@@ -37,7 +37,7 @@ export default function BottomNav({ pendingCount }: { pendingCount?: number }) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
           </Link>
-          <span className="text-[10px] text-slate-500 mt-1">Log</span>
+          <span className="text-[10px] text-zinc-600 mt-1">Log</span>
         </div>
 
         {/* Groups */}
@@ -49,7 +49,7 @@ export default function BottomNav({ pendingCount }: { pendingCount?: number }) {
         </Link>
 
         {/* Profile */}
-        <Link href={`/profile/${user?.id}`} className={`flex-1 flex flex-col items-center justify-center gap-1 py-2 relative ${pathname.startsWith('/profile') ? 'text-green-400' : 'text-slate-500'}`}>
+        <Link href={`/profile/${user?.id}`} className={`flex-1 flex flex-col items-center justify-center gap-1 py-2 relative ${pathname.startsWith('/profile') ? 'text-green-400' : 'text-zinc-600'}`}>
           {(pendingCount ?? 0) > 0 && (
             <span className="absolute top-1.5 right-4 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
               {pendingCount}

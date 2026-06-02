@@ -28,32 +28,43 @@ export default function RegisterPage() {
     } finally { setLoading(false); }
   };
 
-  const inp = 'w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-green-500 transition-colors';
+  const inp = 'w-full bg-transparent border-b border-zinc-700 focus:border-green-500 px-0 py-3 text-zinc-100 placeholder-zinc-600 focus:outline-none transition-colors text-base';
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <h1 className="text-3xl font-bold text-green-400 text-center mb-1">CourtTrack</h1>
-        <p className="text-slate-400 text-center text-sm mb-8">Create your account</p>
-        <form onSubmit={handleSubmit} className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 space-y-4">
+    <div className="min-h-screen flex flex-col px-6" style={{ paddingTop: 'max(env(safe-area-inset-top), 60px)' }}>
+      <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full">
+        <div className="mb-10">
+          <p className="text-green-400 text-xs font-bold tracking-[0.2em] uppercase mb-3">CourtTrack</p>
+          <h1 className="text-4xl font-black text-white leading-tight">
+            Create your<br />account.
+          </h1>
+          <p className="text-zinc-500 mt-3 text-sm">Start tracking your wins and stats.</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
           {[
-            { k: 'username', label: 'Username', type: 'text', placeholder: 'pickleball_king' },
+            { k: 'username', label: 'Username', type: 'text', placeholder: 'your handle' },
             { k: 'email', label: 'Email', type: 'email', placeholder: 'you@example.com' },
             { k: 'password', label: 'Password', type: 'password', placeholder: '6+ characters' },
           ].map(({ k, label, type, placeholder }) => (
             <div key={k}>
-              <label className="text-xs text-slate-400 uppercase tracking-wide block mb-1.5">{label}</label>
-              <input type={type} value={form[k as keyof typeof form]} onChange={set(k as keyof typeof form)} className={inp} placeholder={placeholder} required />
+              <label className="text-[11px] font-semibold text-zinc-500 uppercase tracking-widest block mb-1">{label}</label>
+              <input type={type} value={form[k as keyof typeof form]} onChange={set(k as keyof typeof form)}
+                className={inp} placeholder={placeholder} required />
             </div>
           ))}
-          {error && <p className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">{error}</p>}
-          <button type="submit" disabled={loading} className="w-full bg-green-500 hover:bg-green-400 disabled:opacity-50 text-black font-semibold py-2.5 rounded-lg transition-colors">
-            {loading ? 'Creating account...' : 'Create account'}
+
+          {error && <p className="text-red-400 text-sm">{error}</p>}
+
+          <button type="submit" disabled={loading}
+            className="w-full bg-green-500 hover:bg-green-400 disabled:opacity-40 text-black font-bold py-4 rounded-2xl transition-colors text-base tracking-wide glow-green">
+            {loading ? 'Creating...' : 'Create account →'}
           </button>
         </form>
-        <p className="text-center text-slate-500 text-sm mt-4">
+
+        <p className="text-zinc-600 text-sm mt-8 text-center">
           Already have an account?{' '}
-          <Link href="/login" className="text-green-400 hover:text-green-300">Sign in</Link>
+          <Link href="/login" className="text-zinc-300 hover:text-white font-medium transition-colors">Sign in</Link>
         </p>
       </div>
     </div>
