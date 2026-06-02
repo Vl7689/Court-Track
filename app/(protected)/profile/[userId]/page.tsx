@@ -8,15 +8,20 @@ import MatchCard from '@/components/MatchCard';
 import type { PlayerStats } from '@/types';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return <div><h3 className="text-base font-semibold text-slate-200 mb-3">{title}</h3>{children}</div>;
+  return (
+    <div>
+      <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">{title}</h3>
+      {children}
+    </div>
+  );
 }
 
 function Mini({ label, value, sub, color }: { label: string; value: string | number; sub?: string; color?: string }) {
   return (
-    <div className="bg-slate-800/60 border border-slate-700 rounded-xl p-4 text-center">
-      <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">{label}</p>
+    <div className="bg-slate-900 rounded-xl p-4 text-center">
       <p className={`text-xl font-bold ${color ?? 'text-white'}`}>{value}</p>
-      {sub && <p className="text-slate-500 text-xs mt-0.5">{sub}</p>}
+      <p className="text-slate-500 text-xs mt-1">{label}</p>
+      {sub && <p className="text-slate-600 text-[11px] mt-0.5">{sub}</p>}
     </div>
   );
 }
@@ -102,7 +107,7 @@ export default function ProfilePage({ params }: { params: { userId: string } }) 
         </div>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-slate-900 rounded-2xl p-5">
         <StatCard label="Wins" value={stats.wins} accent />
         <StatCard label="Losses" value={stats.losses} />
         <StatCard label="Win Rate" value={`${stats.winRate}%`} accent />
@@ -113,7 +118,7 @@ export default function ProfilePage({ params }: { params: { userId: string } }) 
         <Section title="Form Trend">
           <div className="grid grid-cols-3 gap-3">
             {[{ label: 'Last 5', data: formTrend.last5 }, { label: 'Last 10', data: formTrend.last10 }, { label: 'All Time', data: formTrend.overall }].map(({ label, data }) => (
-              <div key={label} className="bg-slate-800/60 border border-slate-700 rounded-xl p-4 text-center">
+              <div key={label} className="bg-slate-900 rounded-xl p-4 text-center">
                 <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">{label}</p>
                 <p className="text-2xl font-bold text-white inline-flex items-baseline gap-1">
                   {data.winRate}%{label !== 'All Time' && <FormBadge winRate={data.winRate} overall={formTrend.overall.winRate} />}
@@ -128,7 +133,7 @@ export default function ProfilePage({ params }: { params: { userId: string } }) 
           <Section title="Rivalries">
             <div className="grid grid-cols-2 gap-4">
               {nemesis ? (
-                <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-5">
+                <div className="bg-slate-900 border-l-2 border-red-500 rounded-r-xl pl-4 pr-4 py-4">
                   <p className="text-red-400 text-xs font-semibold uppercase tracking-wide mb-1">Your Nemesis</p>
                   <Link href={`/profile/${nemesis.opponent.id}`} className="text-lg font-bold text-white hover:text-red-400 transition-colors">{nemesis.opponent.username}</Link>
                   <p className="text-slate-400 text-sm mt-1">{nemesis.wins}W – {nemesis.losses}L · <span className="text-red-400">{nemesis.winRate}%</span></p>
@@ -136,7 +141,7 @@ export default function ProfilePage({ params }: { params: { userId: string } }) 
                 </div>
               ) : <div />}
               {bestVictim ? (
-                <div className="bg-green-500/5 border border-green-500/20 rounded-xl p-5">
+                <div className="bg-slate-900 border-l-2 border-green-500 rounded-r-xl pl-4 pr-4 py-4">
                   <p className="text-green-400 text-xs font-semibold uppercase tracking-wide mb-1">Favorite Victim</p>
                   <Link href={`/profile/${bestVictim.opponent.id}`} className="text-lg font-bold text-white hover:text-green-400 transition-colors">{bestVictim.opponent.username}</Link>
                   <p className="text-slate-400 text-sm mt-1">{bestVictim.wins}W – {bestVictim.losses}L · <span className="text-green-400">{bestVictim.winRate}%</span></p>
@@ -218,7 +223,7 @@ export default function ProfilePage({ params }: { params: { userId: string } }) 
           <Section title="Singles vs Doubles">
             <div className="grid grid-cols-2 gap-4">
               {[{ label: 'Singles', data: formatBreakdown.singles }, { label: 'Doubles', data: formatBreakdown.doubles }].map(({ label, data }) => (
-                <div key={label} className="bg-slate-800/60 border border-slate-700 rounded-xl p-5">
+                <div key={label} className="bg-slate-900 rounded-xl p-5">
                   <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">{label}</p>
                   <p className={`text-3xl font-bold ${data.winRate >= 50 ? 'text-green-400' : 'text-white'}`}>{data.winRate}%</p>
                   <p className="text-slate-500 text-sm mt-1">{data.wins}W – {data.losses}L in {data.total} matches</p>
